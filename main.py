@@ -269,7 +269,7 @@ aspect_word= determine_aspect(aspect_word)
 input_sentence = input_sentence.replace(g, aspect_word)
 
 a = remove_specific_words_and_backslash(input_sentence)
-a=modify_sentence88(aspect_word,a)
+a=modify_sentence(aspect_word,a)
 #a = a.replace('and','and1')
 input_sentence=a
 
