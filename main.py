@@ -11,6 +11,7 @@ from nltk import word_tokenize
 from nltk import StanfordTagger
 import stanza #Last version
 from collections import OrderedDict
+From Modify_Sentence import modify_sentence
 # Download and set up the Stanford CoreNLP client
 stanza.download('en')
 nlp = stanza.Pipeline(lang='en', processors='tokenize,pos')
