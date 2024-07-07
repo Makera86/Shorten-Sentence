@@ -53,5 +53,5 @@ def modify_sentence(aspect, sentence):
 # Example usage
 aspect = "brown fox"
 sentence = "The quick brown fox and the lazy dog."
-modified_sentence = modify_sentence88(aspect, sentence)
+modified_sentence = modify_sentence(aspect, sentence)
 print(modified_sentence)
