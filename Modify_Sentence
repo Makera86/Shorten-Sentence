@@ -1,0 +1,57 @@
+import stanza
+
+# Ensure the English model is downloaded
+stanza.download('en', package='default', verbose=False)
+
+# Setup a processing pipeline for English
+nlp = stanza.Pipeline(lang='en', processors='tokenize,mwt,pos', verbose=False)
+
+def modify_sentence(aspect, sentence):
+    # Process the sentence using the Stanza pipeline to get a Document object
+    doc = nlp(sentence)
+
+    # Flatten the document structure to get a list of (word, pos) tuples
+    words = [(word.text, word.upos) for sent in doc.sentences for word in sent.words]
+
+    # Find all indices of 'and' in the sentence
+    and_indices = [i for i, (word, _) in enumerate(words) if word.lower() == 'and']
+
+    # Aspect indices
+    aspect_words = aspect.split()
+    aspect_indices = [i for i, (word, _) in enumerate(words) if word.lower() in [aw.lower() for aw in aspect_words]]
+
+    keep_indices = set(range(len(words)))  # Start with all indices
+
+    # Process each 'and' and its surrounding words
+    for and_index in and_indices:
+        # Identify continuous nouns before 'and'
+        nouns_before_and = []
+        i = and_index - 1
+        while i >= 0 and words[i][1] == 'NOUN':
+            nouns_before_and.append(i)
+            i -= 1
+
+        # Identify continuous nouns after 'and'
+        nouns_after_and = []
+        i = and_index + 1
+        while i < len(words) and words[i][1] == 'NOUN':
+            nouns_after_and.append(i)
+            i += 1
+
+        # Update keep_indices based on the presence of aspect indices
+        if any(idx in nouns_before_and for idx in aspect_indices) and nouns_after_and:
+            # Remove nouns after 'and', but keep 'and' itself
+            keep_indices.difference_update(nouns_after_and)
+        elif any(idx in nouns_after_and for idx in aspect_indices) and nouns_before_and:
+            # Remove nouns before 'and', but keep 'and' itself
+            keep_indices.difference_update(nouns_before_and)
+
+    # Construct the modified sentence
+    modified_sentence = ' '.join(words[i][0] for i in sorted(keep_indices))
+    return modified_sentence
+
+# Example usage
+aspect = "brown fox"
+sentence = "The quick brown fox and the lazy dog."
+modified_sentence = modify_sentence88(aspect, sentence)
+print(modified_sentence)
