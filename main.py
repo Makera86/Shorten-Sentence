@@ -13,6 +13,7 @@ import stanza #Last version
 from collections import OrderedDict
 from Modify_Sentence import modify_sentence
 from Determine_Aspect import determine_aspect
+from remove_specific_words import remove_specific_words_and_backslash
 # Download and set up the Stanford CoreNLP client
 stanza.download('en')
 nlp = stanza.Pipeline(lang='en', processors='tokenize,pos')
